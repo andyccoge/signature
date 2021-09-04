@@ -1,0 +1,76 @@
+.overflow_hidden{
+	overflow: hidden;
+	position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+}
+.cursor_move{
+	cursor: move;
+}
+.cursor_pointer{
+	cursor: pointer;
+}
+
+.signature_area{
+	display: flex;
+	margin-bottom: 20px;
+	user-select: none;
+}
+.tool_area{
+	min-width: 200px;
+	width: fit-content;
+}
+.view_area{
+	width: 100%;
+}
+.view_area .view_area_content{
+	border: 1px solid #dee2e6;
+    max-height: 60vh;
+    overflow-y: scroll;
+}
+
+.signature_area .thead{
+    background-color: #ddd;
+}
+.signature_area .btn{
+	min-width: 60px;
+	cursor: pointer;
+}
+.signature_area .act_area{
+	position: absolute;
+	display: flex;
+    align-items: start;
+    justify-content: center;
+    padding: 0;
+    top: 0;
+	right: -8.8%;
+    height: 100%;
+    border: 1px solid #dee2e6;
+}
+.signature_area .signature_click{
+	position: absolute;
+	border: 2px dashed #ff0000;
+	background-color: #ffffff;
+	z-index: 9;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.signature_area .signature_click a{
+	cursor: pointer;
+}
+
+/*簽名畫面*/
+.sign_in_area{
+	width: 100%;
+	max-width: 1000px;
+	position: relative;
+}
+
+
+/*問題功能*/
+.question_area h5 span{
+	font-size: 0.85rem;
+}

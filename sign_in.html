@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>合約簽名程式-客戶簽名</title>
+
+        <link rel="stylesheet" href="./css/reset.css" />
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="./css/bootstrap-icons.css" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+        <!-- jquery -->
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+        <link rel="stylesheet" href="./css/signature.css" />
+    </head>
+
+	<body>
+		<section id="signature_sign_in"  class="main">
+			<div class="container border-0">
+				<div class="signature_area row d-flex flex-column align-items-center">
+					<!-- 簽名區 -->
+					<div class="sign_in_area">
+						<h3 class="font-weight-bold">合約內容</h3>
+					</div>
+					<div class="sign_in_area mb-3">
+						<div class="overflow_hidden">
+							<div class="signature_click cursor_pointer" :id="'signature_click_' + index"
+			   				     v-for="(signature, index) in signatures"
+			   					 v-bind:style="{
+			   					 	width: signature.w + '%',
+			   					 	height: signature.h + '%',
+			   					 	left: signature.p_x + '%',
+			   					 	top: signature.p_y + '%',
+			   					 }"
+								 @click="eidt_signature(index)"
+			   					 data-toggle="modal" data-target="#signatureEditView">
+			   					<span v-if="signature.sign==''">點我簽名</span>
+			   					<img class="w-100" v-if="signature.sign!=''" :src="signature.sign">
+			   				</div>
+			   			</div>
+						<div class="sign_in_area_imgs">
+							<div class="position-relative" v-for="(img, index) in imgs">
+								<img class="w-100" :src="img">
+							</div>
+						</div>
+					</div>
+
+					<div class="sign_in_area">
+						<div class="w-100 btn btn-success mb-3" 
+							 v-if="complete=='0'"
+							 @click="submit">送出合約</div>
+						<div class="w-100 btn btn-primary mb-3" 
+							 v-if="complete!='0'"
+							 @click="print">列印合約</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!--添加簽名畫面///////////////////////////////////////////////-->
+			<div class="modal p-0 fade" id="signatureEditView" tabindex="-1" role="dialog" 
+				 aria-labelledby="signatureEditViewTitle" aria-hidden="true">
+			    <div class="modal-dialog modal-dialog-centered" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="signatureEditViewTitle">簽名</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body container-fluid">
+			            	<div class="row w-100 m-0">
+			            		<div class="col-12 p-0 mb-4">
+			            			<div class="sigPad mb-2" v-if="complete=='0'">
+									    簽名區：<span class="btn btn-danger clearButton float-right">清空簽名區</span>
+									    <div class="sig sigWrapper">
+									    	<canvas class="pad border" width="100" height="100"></canvas>
+									    </div>
+									</div>
+									<div v-if="edit_view.sign!=''">
+			            				簽名：</span>
+			   							<img class="w-100" :src="edit_view.sign">
+			            			</div>
+
+				                    <span class="text-danger" v-if="complete=='0'">請簽名後點擊儲存</span>
+			            		</div>
+			                    <button class="btn btn-success col-12" 
+			                    		v-if="complete=='0'"
+			                    		@click="save_signature">儲存
+			                    </button>
+			            	</div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		</section>
+	
+		<!-- bootstrap -->
+        <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+        <!-- vue -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+        <script src="https://unpkg.com/vue-toasted@1.1.28/dist/vue-toasted.min.js"></script>
+
+        <!-- 截圖js -->
+		<script charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+
+		<!-- 簽名功能 -->
+        <script src="./js/signature_sign_in.js"></script>
+		<script src="./js/draw.js"></script>
+		<script type="text/javascript">
+			var sigPad = $('.sigPad').signaturePad({ drawOnly: true });
+
+			signature_sign_inVM.get_data(id='e21d47599906cf433a43ad1931ae8890');
+			signature_sign_inVM.reset_edit_view();
+		</script>
+	</body>
+</html>

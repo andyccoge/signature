@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>合約簽名程式-設定合約</title>
+
+        <link rel="stylesheet" href="./css/reset.css" />
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="./css/bootstrap-icons.css" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+        <!-- jquery -->
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+        <link rel="stylesheet" href="./css/signature.css" />
+    </head>
+
+	<body>
+		<div id="signature">
+			<div class="container">
+		   		<h2 class="font-weight-bold mt-4" align="center">設定合約</h3>
+		   		<ul>
+		   			<li>此程式可上傳多圖並在其上添加簽名區塊，後續即可提供給客戶簽名確認</li>
+		   			<li>請先點擊左側「選擇檔案」來添加合約圖片，右側合約畫會即時顯示上傳結果，如有錯誤可點擊右側操作中的「刪除」來刪掉單張圖片，也可點擊左側左側上傳圖片的「清空」來清除全部圖片</li>
+		   			<li>完成檔案上傳後再點擊設定簽名的「添加」按鈕，輸入期望的簽名區寬高及顯示位置，合約畫面中就會多一個簽名區塊，可以拖拉它調整位置或是點擊「點我編輯」修改寬高等或刪除，若要刪除全部簽名，可點擊簽名設定的「清空」</li>
+		   			<li>簽名添加時預設位置為當前合約畫面顯示的最左上角，所以可以先轉動合約畫面至大約位置再添加簽名</li>
+		   			<li>在簽名時，客戶須簽完所有簽名區才能提交合約，所以簽名區請添加必要的量即可</li>
+		   			<li>另外，可能因為簽名位置設定超出合約畫面而無法顯示，因此建議新增流程是:圖片>簽名，刪除流程是:簽名>圖片</li>
+		   		</ul>
+		   		<!-- 設定簽名區 -->
+		   		<h4 class="col-12 font-weight-bold m-0 mb-2">簽名設定</h4>
+		   		<div class="signature_area container-fluid mb-4">
+		   			<div class="row w-100">
+			   			<!-- 工具區 -->
+			   			<div class="tool_area col-3">
+			   				<div class="thead col-12 mb-2 text-center font-weight-bold">
+				   				工具
+				   			</div>
+			   				<div class="row p-3 align-items-center  mb-4">
+			   					<p class="col-4 mb-2 p-0">1.上傳圖片</p>
+								<input class="col-8 mb-2 p-0" type="file" id="add_img" accept="image/*" @change="add_img">
+								<a id="open_btn" class="col-5 btn bg-danger text-white"
+				   				   @click="cancel_imgs">清空
+				   				</a>
+				   				<!-- <a class="col-6 offset-1 btn bg-success text-white" @click="add_img">添加</a> -->
+				   			</div>
+				   			<div class="row p-3 align-items-center  mb-4">
+			   					<p class="col-12 mb-2 p-0">
+			   						2.設定簽名 (目前已添加{{signatures.length}}個)
+			   					</p>
+				   				<a id="open_btn" class="col-5 btn bg-danger text-white"
+				   				   @click="cancel_signatures">清空
+				   				</a>
+				   				<a id="open_btn" class="col-6 offset-1 btn bg-success text-white"
+				   				   data-toggle="modal" data-target="#signatureEditView"
+				   				   @click="reset_edit_view">添加
+				   				</a>
+				   			</div>
+			   			</div>
+			   			<!-- 畫面區 -->
+			   			<div class="view_area col-9 p-0">
+			   				<div class="row w-100 m-0 mb-2 font-weight-bold">
+				   				<div class="thead col-11 text-center">
+				   					合約畫面
+				   				</div>
+				   				<div class="thead col-1 text-center">
+				   					操作
+				   				</div>
+				   			</div>
+				   			<div id="view_area_content" class="view_area_content">
+					   			<div class="row w-100 m-0 position-relative">
+				   					<div class="col-11 p-0">
+				   						<div class="overflow_hidden">
+					   						<div class="signature_click cursor_move" :id="'signature_click_' + index"
+							   				     v-for="(signature, index) in signatures"
+							   					 v-bind:style="{
+							   					 	width: signature.w + 'px',
+							   					 	height: signature.h + 'px',
+							   					 	left: signature.p_x + 'px',
+							   					 	top: signature.p_y + 'px',
+							   					 }"
+							   					 @click="click_one_time(index, signature)"
+							   					 @mousedown="move_signature(index, signature)">
+							   					<a data-toggle="modal" data-target="#signatureEditView" 
+							   					   @click="eidt_signature(index)">
+							   					   點我編輯
+							   					</a>
+							   				</div>
+							   			</div>
+						   				<div>
+				   							<div class="position-relative" v-for="(img, index) in imgs">
+				   								<img class="w-100" :src="img">
+				   								<div class="col-1 act_area">
+						   							<a class="btn bg-danger text-white" @click="cancel_img(index)">刪除</a>
+						   						</div>
+						   					</div>
+						   				</div>
+				   					</div>
+					   			</div>
+					   		</div>
+			   			</div>
+			   		</div>
+		   		</div>
+
+				<!-- 內容設定區 -->
+		  		<div>
+					<input class="btn btn-success w-100" value="儲存" type="button" @click="submit"/>
+					<p class="text-danger text-center">
+						此程式僅供測試，尚無後台可接收前端POST的資料，測試簽名請點
+						<a href="./sign_in.html" target="_blank">此連結</a>
+					</p>
+				</div>
+			</div>
+
+			<!--添加簽名畫面///////////////////////////////////////////////-->
+			<div class="modal fade" id="signatureEditView" tabindex="-1" role="dialog" 
+				 aria-labelledby="signatureEditViewTitle" aria-hidden="true">
+			    <div class="modal-dialog modal-dialog-centered" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="signatureEditViewTitle">添加簽名</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body container-fluid">
+			            	<div class="row w-100 m-0">
+			            		<div class="col-12 mb-4">
+				                    寬度：<input type="number" v-model="edit_view.w">px<br>
+				                    高度：<input type="number" v-model="edit_view.h">px<br>
+				                    <br>
+				                    距離左側：<input type="number" v-model="edit_view.p_x">px<br>
+				                    距離頂端：<input type="number" v-model="edit_view.p_y">px<br>
+				                    <span class="text-danger">填加後可於合約畫面內拖拉位置，也可點擊簽名區編輯寬高</span>
+			            		</div>
+			                    <button class="btn btn-success col-12" 
+			                    		v-if="edit_view.method=='add'" 
+			                    		@click="save_signature">建立
+			                    </button>
+			                    <button class="btn btn-danger col-5" 
+			                    		v-if="edit_view.method=='edit'" 
+			                    		@click="cancel_signature(edit_view.i)">刪除
+			                    </button>
+			                    <button class="btn btn-success col-6 offset-1" 
+			                    		v-if="edit_view.method=='edit'" 
+			                    		@click="save_signature">儲存
+			                    </button>
+			            	</div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		</div>
+	
+		<!-- bootstrap -->
+        <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+        <!-- vue -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+        <script src="https://unpkg.com/vue-toasted@1.1.28/dist/vue-toasted.min.js"></script>
+
+        <!-- 簽名功能 -->
+        <script src="./js/signature.js"></script>
+        <script type="text/javascript">
+        	signatureVM.get_data(cat_id=0); /*載入合約內容*/
+        </script>
+	</body>
+</html>
